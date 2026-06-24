@@ -7,4 +7,5 @@ enum MemberRole: string
     case Owner = 'owner';
     case Manager = 'manager';
     case Cashier = 'cashier';
+    case Staff = 'staff';
 }

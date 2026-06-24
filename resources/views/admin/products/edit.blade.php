@@ -6,7 +6,7 @@
 <div class="mb-6 flex items-center gap-2 text-sm text-slate-500">
     <a href="{{ route('admin.products.index') }}" class="transition-colors hover:text-orange-600">Products</a>
     <span>/</span>
-    <span class="truncate font-medium text-slate-800">{{ $product->name }}</span>
+    <span class="truncate font-medium text-slate-800">{{ $product->t('name') }}</span>
 </div>
 
 @php
@@ -19,73 +19,132 @@
 <form method="POST" action="{{ route('admin.products.update', $product) }}">
     @csrf @method('PUT')
 
-    <div class="overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-200">
+    <div class="space-y-5">
 
-        <div class="border-b border-slate-200 px-6 py-4">
-            <h2 class="text-base font-semibold text-slate-800">Edit Product</h2>
-        </div>
-
-        <div class="grid grid-cols-1 gap-6 p-6 sm:grid-cols-2">
-
-            <div class="sm:col-span-2">
+        <div class="overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-200">
+            <div class="border-b border-slate-200 px-6 py-4">
+                <h2 class="text-base font-semibold text-slate-800">Product Details</h2>
+            </div>
+            <div class="p-6">
                 <label for="restaurant_id" class="{{ $label }}">Restaurant <span class="text-red-500">*</span></label>
                 <select id="restaurant_id" name="restaurant_id" class="{{ $select }}">
                     @foreach($restaurants as $r)
                         <option value="{{ $r->id }}" {{ old('restaurant_id', $product->restaurant_id) == $r->id ? 'selected' : '' }}>
-                            {{ $r->name }}
+                            {{ $r->t('name') }}
                         </option>
                     @endforeach
                 </select>
                 @error('restaurant_id') <p class="{{ $errText }}">{{ $message }}</p> @enderror
             </div>
+        </div>
 
-            <div class="sm:col-span-2">
-                <label for="name" class="{{ $label }}">Product Name <span class="text-red-500">*</span></label>
-                <input id="name" name="name" type="text"
-                       value="{{ old('name', $product->name) }}"
-                       class="{{ $input }}">
-                @error('name') <p class="{{ $errText }}">{{ $message }}</p> @enderror
+        {{-- Translatable --}}
+        <div class="overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-200">
+            <div class="border-b border-slate-200 px-6 py-4">
+                <h2 class="text-base font-semibold text-slate-800">Name &amp; Description</h2>
             </div>
 
-            <div class="sm:col-span-2">
-                <label for="description" class="{{ $label }}">Description</label>
-                <textarea id="description" name="description" rows="4"
-                          class="{{ $input }} resize-none">{{ old('description', $product->description) }}</textarea>
-                @error('description') <p class="{{ $errText }}">{{ $message }}</p> @enderror
+            <div class="border-b border-slate-100 bg-slate-50/40 px-6 py-3">
+                <div class="flex w-fit rounded-xl border border-slate-200 bg-white p-1 shadow-sm">
+                    <button type="button" id="ltab-en" onclick="switchLang('en')"
+                            class="rounded-lg bg-orange-500 px-4 py-1.5 text-sm font-medium text-white shadow-sm transition-colors">
+                        EN &nbsp; English
+                    </button>
+                    <button type="button" id="ltab-ar" onclick="switchLang('ar')"
+                            class="rounded-lg px-4 py-1.5 text-sm font-medium text-slate-500 transition-colors hover:text-slate-700">
+                        AR &nbsp; عربي
+                    </button>
+                </div>
             </div>
 
-            <div class="sm:col-span-2">
+            <div class="p-6">
+                <div id="lpanel-en" class="lang-panel space-y-5">
+                    <div>
+                        <label for="name_en" class="{{ $label }}">Name (English) <span class="text-red-500">*</span></label>
+                        <input id="name_en" name="name[en]" type="text"
+                               value="{{ old('name.en', $product->name['en'] ?? '') }}"
+                               class="{{ $input }}">
+                        @error('name.en') <p class="{{ $errText }}">{{ $message }}</p> @enderror
+                    </div>
+                    <div>
+                        <label for="desc_en" class="{{ $label }}">Description (English)</label>
+                        <textarea id="desc_en" name="description[en]" rows="3"
+                                  class="{{ $input }} resize-none">{{ old('description.en', $product->description['en'] ?? '') }}</textarea>
+                        @error('description.en') <p class="{{ $errText }}">{{ $message }}</p> @enderror
+                    </div>
+                </div>
+
+                <div id="lpanel-ar" class="lang-panel hidden space-y-5" dir="rtl">
+                    <div>
+                        <label for="name_ar" class="{{ $label }}">الاسم (عربي)</label>
+                        <input id="name_ar" name="name[ar]" type="text"
+                               value="{{ old('name.ar', $product->name['ar'] ?? '') }}"
+                               class="{{ $input }}">
+                        @error('name.ar') <p class="{{ $errText }}">{{ $message }}</p> @enderror
+                    </div>
+                    <div>
+                        <label for="desc_ar" class="{{ $label }}">الوصف (عربي)</label>
+                        <textarea id="desc_ar" name="description[ar]" rows="3"
+                                  class="{{ $input }} resize-none">{{ old('description.ar', $product->description['ar'] ?? '') }}</textarea>
+                        @error('description.ar') <p class="{{ $errText }}">{{ $message }}</p> @enderror
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-200">
+            <div class="border-b border-slate-200 px-6 py-4">
+                <h2 class="text-base font-semibold text-slate-800">Media</h2>
+            </div>
+            <div class="p-6">
                 <label for="image_url" class="{{ $label }}">Image URL</label>
                 <input id="image_url" name="image_url" type="url"
                        value="{{ old('image_url', $product->image_url) }}"
                        class="{{ $input }}" placeholder="https://…">
                 @error('image_url') <p class="{{ $errText }}">{{ $message }}</p> @enderror
             </div>
-
         </div>
 
-        <div class="flex items-center justify-between gap-3 border-t border-slate-200 bg-slate-50/60 px-6 py-4">
+        <div class="flex items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white px-6 py-4 shadow-sm">
             <button type="button"
-                    onclick="if(confirm('Delete {{ addslashes($product->name) }}?')) document.getElementById('delete-product-form').submit()"
-                    class="text-sm font-medium text-red-400 transition-colors hover:text-red-600">
-                Delete product
-            </button>
+                    onclick="if(confirm('Delete {{ addslashes($product->t('name')) }}?')) document.getElementById('delete-product-form').submit()"
+                    class="text-sm font-medium text-red-400 transition-colors hover:text-red-600">Delete product</button>
             <div class="flex items-center gap-3">
                 <a href="{{ route('admin.products.index') }}"
-                   class="rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50">
-                    Cancel
-                </a>
+                   class="rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50">Cancel</a>
                 <button type="submit"
-                        class="rounded-xl bg-orange-500 px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-orange-600">
-                    Save Changes
-                </button>
+                        class="rounded-xl bg-orange-500 px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-orange-600">Save Changes</button>
             </div>
         </div>
+
     </div>
 </form>
 
 <form id="delete-product-form" method="POST" action="{{ route('admin.products.destroy', $product) }}" class="hidden">
     @csrf @method('DELETE')
 </form>
+
+@push('scripts')
+<script>
+function switchLang(lang) {
+    document.querySelectorAll('.lang-panel').forEach(p => p.classList.add('hidden'));
+    document.getElementById('lpanel-' + lang).classList.remove('hidden');
+    ['en','ar'].forEach(l => {
+        const tab = document.getElementById('ltab-' + l);
+        if (l === lang) {
+            tab.classList.add('bg-orange-500','text-white','shadow-sm');
+            tab.classList.remove('text-slate-500');
+        } else {
+            tab.classList.remove('bg-orange-500','text-white','shadow-sm');
+            tab.classList.add('text-slate-500');
+        }
+    });
+}
+document.addEventListener('DOMContentLoaded', () => {
+    const ar = document.getElementById('lpanel-ar');
+    if (ar && ar.querySelector('.text-red-500')) switchLang('ar');
+});
+</script>
+@endpush
 
 @endsection

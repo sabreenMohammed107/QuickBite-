@@ -406,3 +406,30 @@ http://127.0.0.1:8000/admin/restaurants  ← Dashboard entry point
 Email:    admin@quickbite.com
 Password: Admin@1234
 ```
+---
+
+## 🔐 Unified Authentication & Routing Strategy
+- **Single Login Page:** A unified login interface at `/login` for all user types.
+- **Dynamic Redirection:** Upon successful authentication, a custom Middleware (`RedirectBasedOnRole`) inspects `users.role`:
+  - `admin` -> Redirects to `/admin/dashboard`
+  - `restaurant_owner` / `manager` / `cashier` -> Redirects to `/merchant/dashboard`
+  - `customer` -> Redirects to frontend user portal `/home`.
+- **Session Context:** For restaurant staff, the middleware or session must bind the active `restaurant_id` from the `restaurant_members` table to scope their dashboard views.
+
+### 4. RBAC & Flexible Permissions Module (`restaurant_members`)
+- Bridges staff management with dynamic, fine-grained application permissions.
+- `id` (bigint)
+- `user_id` (foreignId -> users)
+- `restaurant_id` (foreignId -> restaurants)
+- `role` (enum: owner, manager, cashier, staff)
+- `status` (string: active, inactive)
+- `permissions` (json) -> Stores granular capability arrays for the specific restaurant context (e.g., `["orders.view" , "orders.create", "menu.edit"]`).
+- *Constraint:* Super Admin (`users.role = 'admin'`) bypasses all checks and inherits ALL permissions globally.
+
+---
+
+## 🖥️ Custom Dashboard Infrastructure (No Packages)
+...
+- **Super Admin Capabilities:** Full CRUD access to all resources, ability to create restaurant accounts, assign them to brands/branches, and check/uncheck modular permission checkboxes dynamically via the UI forms.
+
+5. **Flexible RBAC Setup:** Update `restaurant_members` migration to include a `permissions` JSON column. Implement a helper method or Middleware `CheckRestaurantPermission` to protect routes based on the active restaurant context and JSON array capabilities.

@@ -24,7 +24,6 @@
                 <tr>
                     <th class="px-6 py-3.5 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">Branch</th>
                     <th class="px-6 py-3.5 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">Restaurant</th>
-                    <th class="px-6 py-3.5 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">Coordinates</th>
                     <th class="px-6 py-3.5 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">Hours</th>
                     <th class="px-6 py-3.5 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">Status</th>
                     <th class="relative px-6 py-3.5"><span class="sr-only">Actions</span></th>
@@ -34,19 +33,15 @@
                 @forelse($branches as $branch)
                     <tr class="transition-colors hover:bg-slate-50/70">
                         <td class="px-6 py-4">
-                            <p class="text-sm font-medium text-slate-800">{{ $branch->label ?? $branch->address_text }}</p>
+                            <p class="text-sm font-medium text-slate-800">
+                                {{ $branch->t('label') ?: $branch->t('address_text') }}
+                            </p>
                             <p class="mt-0.5 max-w-[240px] truncate text-xs text-slate-400">
-                                {{ $branch->country_code }} · {{ $branch->address_text }}
+                                {{ $branch->country_code }} · {{ $branch->t('address_text') }}
                             </p>
                         </td>
-                        <td class="px-6 py-4">
-                            <span class="text-sm text-slate-700">{{ $branch->restaurant?->name ?? '—' }}</span>
-                        </td>
-                        <td class="px-6 py-4">
-                            <span class="font-mono text-xs text-slate-500">
-                                {{ number_format($branch->lat, 5) }},
-                                {{ number_format($branch->lng, 5) }}
-                            </span>
+                        <td class="px-6 py-4 text-sm text-slate-700">
+                            {{ $branch->restaurant?->t('name') ?? '—' }}
                         </td>
                         <td class="px-6 py-4 text-sm text-slate-600">
                             {{ $branch->opens_at }} – {{ $branch->closes_at }}
@@ -67,26 +62,18 @@
                         <td class="px-6 py-4 text-right">
                             <div class="flex items-center justify-end gap-4">
                                 <a href="{{ route('admin.branches.edit', $branch) }}"
-                                   class="text-sm font-medium text-slate-600 transition-colors hover:text-orange-600">
-                                    Edit
-                                </a>
+                                   class="text-sm font-medium text-slate-600 transition-colors hover:text-orange-600">Edit</a>
                                 <form method="POST" action="{{ route('admin.branches.destroy', $branch) }}"
-                                      onsubmit="return confirm('Delete this branch? This cannot be undone.')">
+                                      onsubmit="return confirm('Delete this branch?')">
                                     @csrf @method('DELETE')
-                                    <button type="submit"
-                                            class="text-sm font-medium text-red-400 transition-colors hover:text-red-600">
-                                        Delete
-                                    </button>
+                                    <button type="submit" class="text-sm font-medium text-red-400 transition-colors hover:text-red-600">Delete</button>
                                 </form>
                             </div>
                         </td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="6" class="px-6 py-16 text-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" class="mx-auto mb-3 h-12 w-12 text-slate-300">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0zM19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/>
-                            </svg>
+                        <td colspan="5" class="px-6 py-16 text-center">
                             <p class="text-sm text-slate-500">No branches yet.</p>
                             <a href="{{ route('admin.branches.create') }}"
                                class="mt-2 inline-block text-sm font-medium text-orange-500 hover:text-orange-600">
@@ -99,9 +86,7 @@
         </table>
     </div>
     @if($branches->hasPages())
-        <div class="border-t border-slate-200 px-6 py-4">
-            {{ $branches->links() }}
-        </div>
+        <div class="border-t border-slate-200 px-6 py-4">{{ $branches->links() }}</div>
     @endif
 </div>
 

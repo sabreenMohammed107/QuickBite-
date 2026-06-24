@@ -24,7 +24,8 @@ class RestaurantController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'name'            => ['required', 'string', 'max:255'],
+            'name.en'         => ['required', 'string', 'max:255'],
+            'name.ar'         => ['nullable', 'string', 'max:255'],
             'status'          => ['required', Rule::in(['active', 'inactive', 'pending_review'])],
             'logo_url'        => ['nullable', 'url', 'max:500'],
             'primary_country' => ['required', 'string', 'size:2', 'alpha'],
@@ -32,11 +33,12 @@ class RestaurantController extends Controller
 
         $data['primary_country'] = strtoupper($data['primary_country']);
         $data['logo_url']        = $request->filled('logo_url') ? $data['logo_url'] : null;
+        $data['name']            = $request->input('name');
 
         Restaurant::create($data);
 
         return redirect()->route('admin.restaurants.index')
-            ->with('success', "Restaurant \"{$data['name']}\" created successfully.");
+            ->with('success', "Restaurant \"{$data['name']['en']}\" created successfully.");
     }
 
     public function edit(Restaurant $restaurant)
@@ -47,7 +49,8 @@ class RestaurantController extends Controller
     public function update(Request $request, Restaurant $restaurant)
     {
         $data = $request->validate([
-            'name'            => ['required', 'string', 'max:255'],
+            'name.en'         => ['required', 'string', 'max:255'],
+            'name.ar'         => ['nullable', 'string', 'max:255'],
             'status'          => ['required', Rule::in(['active', 'inactive', 'pending_review'])],
             'logo_url'        => ['nullable', 'url', 'max:500'],
             'primary_country' => ['required', 'string', 'size:2', 'alpha'],
@@ -55,16 +58,17 @@ class RestaurantController extends Controller
 
         $data['primary_country'] = strtoupper($data['primary_country']);
         $data['logo_url']        = $request->filled('logo_url') ? $data['logo_url'] : null;
+        $data['name']            = $request->input('name');
 
         $restaurant->update($data);
 
         return redirect()->route('admin.restaurants.index')
-            ->with('success', "Restaurant \"{$restaurant->name}\" updated successfully.");
+            ->with('success', "Restaurant \"{$restaurant->t('name')}\" updated successfully.");
     }
 
     public function destroy(Restaurant $restaurant)
     {
-        $name = $restaurant->name;
+        $name = $restaurant->t('name');
         $restaurant->delete();
 
         return redirect()->route('admin.restaurants.index')

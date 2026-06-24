@@ -38,19 +38,24 @@
                                     <img src="{{ $product->image_url }}" alt=""
                                          class="h-10 w-10 rounded-lg border border-slate-200 object-cover">
                                 @else
-                                    <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-100 text-lg">
-                                        🍽️
+                                    <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-100 text-base font-bold text-slate-400">
+                                        {{ strtoupper(substr($product->t('name'), 0, 1)) }}
                                     </div>
                                 @endif
-                                <p class="text-sm font-medium text-slate-800">{{ $product->name }}</p>
+                                <div>
+                                    <p class="text-sm font-medium text-slate-800">{{ $product->t('name') }}</p>
+                                    @if(!empty($product->name['ar']))
+                                        <p class="text-xs text-slate-400" dir="rtl">{{ $product->name['ar'] }}</p>
+                                    @endif
+                                </div>
                             </div>
                         </td>
                         <td class="px-6 py-4 text-sm text-slate-600">
-                            {{ $product->restaurant?->name ?? '—' }}
+                            {{ $product->restaurant?->t('name') ?? '—' }}
                         </td>
                         <td class="px-6 py-4">
                             <p class="max-w-[260px] truncate text-sm text-slate-500">
-                                {{ $product->description ?? '—' }}
+                                {{ $product->t('description') ?: '—' }}
                             </p>
                         </td>
                         <td class="px-6 py-4 text-sm text-slate-500">
@@ -59,16 +64,11 @@
                         <td class="px-6 py-4 text-right">
                             <div class="flex items-center justify-end gap-4">
                                 <a href="{{ route('admin.products.edit', $product) }}"
-                                   class="text-sm font-medium text-slate-600 transition-colors hover:text-orange-600">
-                                    Edit
-                                </a>
+                                   class="text-sm font-medium text-slate-600 transition-colors hover:text-orange-600">Edit</a>
                                 <form method="POST" action="{{ route('admin.products.destroy', $product) }}"
-                                      onsubmit="return confirm('Delete {{ addslashes($product->name) }}?')">
+                                      onsubmit="return confirm('Delete {{ addslashes($product->t('name')) }}?')">
                                     @csrf @method('DELETE')
-                                    <button type="submit"
-                                            class="text-sm font-medium text-red-400 transition-colors hover:text-red-600">
-                                        Delete
-                                    </button>
+                                    <button type="submit" class="text-sm font-medium text-red-400 transition-colors hover:text-red-600">Delete</button>
                                 </form>
                             </div>
                         </td>
@@ -76,7 +76,6 @@
                 @empty
                     <tr>
                         <td colspan="5" class="px-6 py-16 text-center">
-                            <div class="mx-auto mb-3 text-5xl">🛍️</div>
                             <p class="text-sm text-slate-500">No products yet.</p>
                             <a href="{{ route('admin.products.create') }}"
                                class="mt-2 inline-block text-sm font-medium text-orange-500 hover:text-orange-600">
@@ -89,9 +88,7 @@
         </table>
     </div>
     @if($products->hasPages())
-        <div class="border-t border-slate-200 px-6 py-4">
-            {{ $products->links() }}
-        </div>
+        <div class="border-t border-slate-200 px-6 py-4">{{ $products->links() }}</div>
     @endif
 </div>
 

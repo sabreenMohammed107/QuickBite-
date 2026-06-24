@@ -13,7 +13,11 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        $middleware->alias([
+            'restaurant.permission' => \App\Http\Middleware\CheckRestaurantPermission::class,
+            'role.admin'            => \App\Http\Middleware\EnsureIsAdmin::class,
+            'role.merchant'         => \App\Http\Middleware\EnsureIsMerchant::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

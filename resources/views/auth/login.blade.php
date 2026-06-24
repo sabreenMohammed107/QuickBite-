@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Admin Sign In — QuickBite</title>
+    <title>Sign In — QuickBite</title>
 
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <style type="text/tailwindcss">
@@ -17,7 +17,6 @@
 
 <div class="flex min-h-full flex-col items-center justify-center px-4 py-12">
 
-    {{-- Card --}}
     <div class="w-full max-w-md">
 
         {{-- Logo --}}
@@ -29,7 +28,7 @@
             </div>
             <div class="text-center">
                 <h1 class="text-2xl font-bold tracking-tight text-white">QuickBite</h1>
-                <p class="mt-1 text-sm text-slate-400">Admin Panel</p>
+                <p class="mt-1 text-sm text-slate-400">Sign in to continue</p>
             </div>
         </div>
 
@@ -37,14 +36,14 @@
         <div class="overflow-hidden rounded-2xl bg-slate-900 shadow-2xl ring-1 ring-white/10">
 
             <div class="border-b border-white/10 px-8 py-5">
-                <h2 class="text-base font-semibold text-white">Sign in to your account</h2>
-                <p class="mt-0.5 text-sm text-slate-400">Admin access only.</p>
+                <h2 class="text-base font-semibold text-white">Welcome back</h2>
+                <p class="mt-0.5 text-sm text-slate-400">Enter your credentials to access your portal.</p>
             </div>
 
-            <form method="POST" action="{{ route('login') }}" class="px-8 py-6 space-y-5">
+            <form method="POST" action="{{ route('login') }}" class="space-y-5 px-8 py-6">
                 @csrf
 
-                {{-- Global error --}}
+                {{-- Error banner --}}
                 @if ($errors->any())
                     <div class="flex items-start gap-3 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="mt-0.5 h-4 w-4 shrink-0">
@@ -56,36 +55,34 @@
 
                 {{-- Email --}}
                 <div>
-                    <label for="email" class="block text-sm font-medium text-slate-300">
-                        Email address
-                    </label>
+                    <label for="email" class="block text-sm font-medium text-slate-300">Email address</label>
                     <input id="email"
                            name="email"
                            type="email"
                            autocomplete="email"
                            autofocus
                            value="{{ old('email') }}"
-                           class="mt-1.5 block w-full rounded-xl border border-white/10 bg-slate-800 px-3.5 py-2.5 text-sm text-white placeholder:text-slate-500
-                                  focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500/20 transition"
-                           placeholder="admin@quickbite.com">
+                           class="mt-1.5 block w-full rounded-xl border border-white/10 bg-slate-800 px-3.5 py-2.5 text-sm text-white
+                                  placeholder:text-slate-500 focus:border-orange-500 focus:outline-none focus:ring-2
+                                  focus:ring-orange-500/20 transition"
+                           placeholder="you@example.com">
                 </div>
 
                 {{-- Password --}}
                 <div>
-                    <label for="password" class="block text-sm font-medium text-slate-300">
-                        Password
-                    </label>
+                    <label for="password" class="block text-sm font-medium text-slate-300">Password</label>
                     <input id="password"
                            name="password"
                            type="password"
                            autocomplete="current-password"
-                           class="mt-1.5 block w-full rounded-xl border border-white/10 bg-slate-800 px-3.5 py-2.5 text-sm text-white placeholder:text-slate-500
-                                  focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500/20 transition"
+                           class="mt-1.5 block w-full rounded-xl border border-white/10 bg-slate-800 px-3.5 py-2.5 text-sm text-white
+                                  placeholder:text-slate-500 focus:border-orange-500 focus:outline-none focus:ring-2
+                                  focus:ring-orange-500/20 transition"
                            placeholder="••••••••">
                 </div>
 
                 {{-- Remember me --}}
-                <div class="flex items-center justify-between">
+                <div>
                     <label class="flex cursor-pointer items-center gap-2.5">
                         <input type="checkbox"
                                name="remember"
@@ -105,9 +102,8 @@
             </form>
         </div>
 
-        {{-- Footer hint --}}
         <p class="mt-6 text-center text-xs text-slate-600">
-            QuickBite Admin · Restricted Access
+            QuickBite &middot; Secure Portal
         </p>
     </div>
 </div>

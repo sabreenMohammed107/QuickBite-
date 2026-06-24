@@ -1,0 +1,86 @@
+@extends('merchant.layouts.app')
+@section('title', 'Add Catalog Entry')
+
+@section('content')
+
+<div class="mb-6 flex items-center gap-2 text-sm text-slate-500">
+    <a href="{{ route('merchant.catalog.index') }}" class="hover:text-indigo-600 transition-colors">Branch Catalog</a>
+    <span>/</span>
+    <span class="font-medium text-slate-800">Add Entry</span>
+</div>
+
+@php
+    $input   = 'mt-1.5 block w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 shadow-sm placeholder:text-slate-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition';
+    $select  = 'mt-1.5 block w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition';
+    $label   = 'block text-sm font-medium text-slate-700';
+    $errText = 'mt-1.5 text-xs text-red-500';
+@endphp
+
+<form method="POST" action="{{ route('merchant.catalog.store') }}">
+    @csrf
+    <div class="overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-200">
+        <div class="border-b border-slate-200 px-6 py-4">
+            <h2 class="text-base font-semibold text-slate-800">Catalog Entry</h2>
+            <p class="mt-0.5 text-sm text-slate-500">Assign a product to a branch with its price and stock.</p>
+        </div>
+        <div class="grid grid-cols-1 gap-6 p-6 sm:grid-cols-2">
+
+            <div>
+                <label for="branch_id" class="{{ $label }}">Branch <span class="text-red-500">*</span></label>
+                <select id="branch_id" name="branch_id" class="{{ $select }}">
+                    <option value="">Select branch…</option>
+                    @foreach($branches as $branch)
+                        <option value="{{ $branch->id }}" {{ old('branch_id') == $branch->id ? 'selected' : '' }}>
+                            {{ $branch->label }}
+                        </option>
+                    @endforeach
+                </select>
+                @error('branch_id') <p class="{{ $errText }}">{{ $message }}</p> @enderror
+            </div>
+
+            <div>
+                <label for="product_id" class="{{ $label }}">Product <span class="text-red-500">*</span></label>
+                <select id="product_id" name="product_id" class="{{ $select }}">
+                    <option value="">Select product…</option>
+                    @foreach($products as $product)
+                        <option value="{{ $product->id }}" {{ old('product_id') == $product->id ? 'selected' : '' }}>
+                            {{ $product->name }}
+                        </option>
+                    @endforeach
+                </select>
+                @error('product_id') <p class="{{ $errText }}">{{ $message }}</p> @enderror
+            </div>
+
+            <div>
+                <label for="price" class="{{ $label }}">Price <span class="text-red-500">*</span></label>
+                <input id="price" name="price" type="number" step="0.01" min="0" value="{{ old('price') }}" class="{{ $input }}" placeholder="0.00">
+                @error('price') <p class="{{ $errText }}">{{ $message }}</p> @enderror
+            </div>
+
+            <div>
+                <label for="stock" class="{{ $label }}">Stock <span class="text-red-500">*</span></label>
+                <input id="stock" name="stock" type="number" min="0" value="{{ old('stock', 0) }}" class="{{ $input }}">
+                @error('stock') <p class="{{ $errText }}">{{ $message }}</p> @enderror
+            </div>
+
+            <div class="sm:col-span-2">
+                <label class="flex cursor-pointer items-center gap-2.5">
+                    <input type="checkbox" name="is_available" value="1" {{ old('is_available', '1') ? 'checked' : '' }}
+                           class="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500/30">
+                    <span class="text-sm text-slate-700">Available for ordering</span>
+                </label>
+            </div>
+
+        </div>
+        <div class="flex items-center justify-end gap-3 border-t border-slate-200 bg-slate-50/60 px-6 py-4">
+            <a href="{{ route('merchant.catalog.index') }}"
+               class="rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors">Cancel</a>
+            <button type="submit"
+                    class="rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 transition-colors">
+                Create Entry
+            </button>
+        </div>
+    </div>
+</form>
+
+@endsection

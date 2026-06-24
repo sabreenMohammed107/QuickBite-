@@ -18,7 +18,7 @@ class RestaurantBranchController extends Controller
 
     public function create()
     {
-        $restaurants = Restaurant::orderBy('name')->get(['id', 'name']);
+        $restaurants = Restaurant::orderBy('id')->get(['id', 'name']);
 
         return view('admin.branches.create', compact('restaurants'));
     }
@@ -28,39 +28,10 @@ class RestaurantBranchController extends Controller
         $data = $request->validate([
             'restaurant_id'   => ['required', 'exists:restaurants,id'],
             'country_code'    => ['required', 'string', 'size:2', 'alpha'],
-            'address_text'    => ['required', 'string', 'max:500'],
-            'label'           => ['nullable', 'string', 'max:100'],
-            'lat'             => ['required', 'numeric', 'between:-90,90'],
-            'lng'             => ['required', 'numeric', 'between:-180,180'],
-            'opens_at'        => ['required', 'date_format:H:i'],
-            'closes_at'       => ['required', 'date_format:H:i'],
-            'delivery_radius' => ['required', 'integer', 'min:1', 'max:65535'],
-        ]);
-
-        $data['country_code']   = strtoupper($data['country_code']);
-        $data['is_active']      = $request->boolean('is_active');
-        $data['accept_orders']  = $request->boolean('accept_orders');
-
-        RestaurantBranch::create($data);
-
-        return redirect()->route('admin.branches.index')
-            ->with('success', 'Branch created successfully.');
-    }
-
-    public function edit(RestaurantBranch $branch)
-    {
-        $restaurants = Restaurant::orderBy('name')->get(['id', 'name']);
-
-        return view('admin.branches.edit', compact('branch', 'restaurants'));
-    }
-
-    public function update(Request $request, RestaurantBranch $branch)
-    {
-        $data = $request->validate([
-            'restaurant_id'   => ['required', 'exists:restaurants,id'],
-            'country_code'    => ['required', 'string', 'size:2', 'alpha'],
-            'address_text'    => ['required', 'string', 'max:500'],
-            'label'           => ['nullable', 'string', 'max:100'],
+            'address_text.en' => ['required', 'string', 'max:500'],
+            'address_text.ar' => ['nullable', 'string', 'max:500'],
+            'label.en'        => ['nullable', 'string', 'max:255'],
+            'label.ar'        => ['nullable', 'string', 'max:255'],
             'lat'             => ['required', 'numeric', 'between:-90,90'],
             'lng'             => ['required', 'numeric', 'between:-180,180'],
             'opens_at'        => ['required', 'date_format:H:i'],
@@ -71,6 +42,47 @@ class RestaurantBranchController extends Controller
         $data['country_code']  = strtoupper($data['country_code']);
         $data['is_active']     = $request->boolean('is_active');
         $data['accept_orders'] = $request->boolean('accept_orders');
+        $data['address_text']  = $request->input('address_text');
+        $data['label']         = ($request->filled('label.en') || $request->filled('label.ar'))
+            ? $request->input('label')
+            : null;
+
+        RestaurantBranch::create($data);
+
+        return redirect()->route('admin.branches.index')
+            ->with('success', 'Branch created successfully.');
+    }
+
+    public function edit(RestaurantBranch $branch)
+    {
+        $restaurants = Restaurant::orderBy('id')->get(['id', 'name']);
+
+        return view('admin.branches.edit', compact('branch', 'restaurants'));
+    }
+
+    public function update(Request $request, RestaurantBranch $branch)
+    {
+        $data = $request->validate([
+            'restaurant_id'   => ['required', 'exists:restaurants,id'],
+            'country_code'    => ['required', 'string', 'size:2', 'alpha'],
+            'address_text.en' => ['required', 'string', 'max:500'],
+            'address_text.ar' => ['nullable', 'string', 'max:500'],
+            'label.en'        => ['nullable', 'string', 'max:255'],
+            'label.ar'        => ['nullable', 'string', 'max:255'],
+            'lat'             => ['required', 'numeric', 'between:-90,90'],
+            'lng'             => ['required', 'numeric', 'between:-180,180'],
+            'opens_at'        => ['required', 'date_format:H:i'],
+            'closes_at'       => ['required', 'date_format:H:i'],
+            'delivery_radius' => ['required', 'integer', 'min:1', 'max:65535'],
+        ]);
+
+        $data['country_code']  = strtoupper($data['country_code']);
+        $data['is_active']     = $request->boolean('is_active');
+        $data['accept_orders'] = $request->boolean('accept_orders');
+        $data['address_text']  = $request->input('address_text');
+        $data['label']         = ($request->filled('label.en') || $request->filled('label.ar'))
+            ? $request->input('label')
+            : null;
 
         $branch->update($data);
 

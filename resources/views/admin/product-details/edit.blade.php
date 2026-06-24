@@ -6,7 +6,7 @@
 <div class="mb-6 flex items-center gap-2 text-sm text-slate-500">
     <a href="{{ route('admin.product-details.index') }}" class="transition-colors hover:text-orange-600">Branch Catalog</a>
     <span>/</span>
-    <span class="font-medium text-slate-800">{{ $detail->product?->name }}</span>
+    <span class="font-medium text-slate-800">{{ $detail->product?->t('name') }}</span>
 </div>
 
 @php
@@ -20,7 +20,6 @@
     @csrf @method('PUT')
 
     <div class="overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-200">
-
         <div class="border-b border-slate-200 px-6 py-4">
             <h2 class="text-base font-semibold text-slate-800">Edit Catalog Entry</h2>
         </div>
@@ -32,7 +31,7 @@
                 <select id="branch_id" name="branch_id" class="{{ $select }}">
                     @foreach($branches as $branch)
                         <option value="{{ $branch->id }}" {{ old('branch_id', $detail->branch_id) == $branch->id ? 'selected' : '' }}>
-                            {{ $branch->restaurant?->name }} — {{ $branch->label ?? $branch->address_text }}
+                            {{ $branch->restaurant?->t('name') }} — {{ $branch->t('label') ?: $branch->t('address_text') }}
                         </option>
                     @endforeach
                 </select>
@@ -44,7 +43,7 @@
                 <select id="product_id" name="product_id" class="{{ $select }}">
                     @foreach($products as $product)
                         <option value="{{ $product->id }}" {{ old('product_id', $detail->product_id) == $product->id ? 'selected' : '' }}>
-                            {{ $product->restaurant?->name }} · {{ $product->name }}
+                            {{ $product->restaurant?->t('name') }} · {{ $product->t('name') }}
                         </option>
                     @endforeach
                 </select>
@@ -64,9 +63,7 @@
 
             <div>
                 <label for="stock" class="{{ $label }}">Stock Quantity <span class="text-red-500">*</span></label>
-                <input id="stock" name="stock" type="number" min="0"
-                       value="{{ old('stock', $detail->stock) }}"
-                       class="{{ $input }}">
+                <input id="stock" name="stock" type="number" min="0" value="{{ old('stock', $detail->stock) }}" class="{{ $input }}">
                 @error('stock') <p class="{{ $errText }}">{{ $message }}</p> @enderror
             </div>
 
@@ -88,18 +85,12 @@
         <div class="flex items-center justify-between gap-3 border-t border-slate-200 bg-slate-50/60 px-6 py-4">
             <button type="button"
                     onclick="if(confirm('Remove this catalog entry?')) document.getElementById('delete-detail-form').submit()"
-                    class="text-sm font-medium text-red-400 transition-colors hover:text-red-600">
-                Delete entry
-            </button>
+                    class="text-sm font-medium text-red-400 transition-colors hover:text-red-600">Delete entry</button>
             <div class="flex items-center gap-3">
                 <a href="{{ route('admin.product-details.index') }}"
-                   class="rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50">
-                    Cancel
-                </a>
+                   class="rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50">Cancel</a>
                 <button type="submit"
-                        class="rounded-xl bg-orange-500 px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-orange-600">
-                    Save Changes
-                </button>
+                        class="rounded-xl bg-orange-500 px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-orange-600">Save Changes</button>
             </div>
         </div>
     </div>

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable(['user_id', 'restaurant_id', 'role', 'status'])]
+#[Fillable(['user_id', 'restaurant_id', 'role', 'status', 'permissions'])]
 class RestaurantMember extends Model
 {
     protected $connection = 'mysql_core';
@@ -15,7 +15,8 @@ class RestaurantMember extends Model
     protected function casts(): array
     {
         return [
-            'role' => MemberRole::class,
+            'role'        => MemberRole::class,
+            'permissions' => 'array',
         ];
     }
 

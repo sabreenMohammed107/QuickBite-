@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\HasTranslations;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -10,15 +11,19 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 #[Fillable(['restaurant_id', 'country_code', 'address_text', 'label', 'lat', 'lng', 'is_active', 'opens_at', 'closes_at', 'accept_orders', 'delivery_radius'])]
 class RestaurantBranch extends Model
 {
+    use HasTranslations;
+
     protected $connection = 'mysql_core';
 
     protected function casts(): array
     {
         return [
-            'lat' => 'float',
-            'lng' => 'float',
-            'is_active' => 'boolean',
-            'accept_orders' => 'boolean',
+            'lat'          => 'float',
+            'lng'          => 'float',
+            'is_active'    => 'boolean',
+            'accept_orders'=> 'boolean',
+            'label'        => 'array',
+            'address_text' => 'array',
         ];
     }
 

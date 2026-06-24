@@ -34,17 +34,17 @@
                 @forelse($details as $detail)
                     <tr class="transition-colors hover:bg-slate-50/70">
                         <td class="px-6 py-4">
-                            <p class="text-sm font-medium text-slate-800">{{ $detail->product?->name ?? '—' }}</p>
-                            <p class="text-xs text-slate-400">{{ $detail->branch?->restaurant?->name ?? '' }}</p>
+                            <p class="text-sm font-medium text-slate-800">{{ $detail->product?->t('name') ?? '—' }}</p>
+                            <p class="text-xs text-slate-400">{{ $detail->branch?->restaurant?->t('name') ?? '' }}</p>
                         </td>
                         <td class="px-6 py-4">
-                            <p class="text-sm text-slate-700">{{ $detail->branch?->label ?? $detail->branch?->address_text ?? '—' }}</p>
+                            <p class="text-sm text-slate-700">
+                                {{ $detail->branch?->t('label') ?: $detail->branch?->t('address_text') ?? '—' }}
+                            </p>
                             <p class="text-xs text-slate-400">{{ $detail->branch?->country_code }}</p>
                         </td>
                         <td class="px-6 py-4">
-                            <span class="text-sm font-semibold text-slate-800">
-                                ${{ number_format($detail->price, 2) }}
-                            </span>
+                            <span class="text-sm font-semibold text-slate-800">${{ number_format($detail->price, 2) }}</span>
                         </td>
                         <td class="px-6 py-4">
                             <span class="text-sm {{ $detail->stock === 0 ? 'font-semibold text-red-500' : 'text-slate-700' }}">
@@ -60,16 +60,11 @@
                         <td class="px-6 py-4 text-right">
                             <div class="flex items-center justify-end gap-4">
                                 <a href="{{ route('admin.product-details.edit', $detail) }}"
-                                   class="text-sm font-medium text-slate-600 transition-colors hover:text-orange-600">
-                                    Edit
-                                </a>
+                                   class="text-sm font-medium text-slate-600 transition-colors hover:text-orange-600">Edit</a>
                                 <form method="POST" action="{{ route('admin.product-details.destroy', $detail) }}"
                                       onsubmit="return confirm('Remove this catalog entry?')">
                                     @csrf @method('DELETE')
-                                    <button type="submit"
-                                            class="text-sm font-medium text-red-400 transition-colors hover:text-red-600">
-                                        Delete
-                                    </button>
+                                    <button type="submit" class="text-sm font-medium text-red-400 transition-colors hover:text-red-600">Delete</button>
                                 </form>
                             </div>
                         </td>
@@ -77,9 +72,6 @@
                 @empty
                     <tr>
                         <td colspan="6" class="px-6 py-16 text-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" class="mx-auto mb-3 h-12 w-12 text-slate-300">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75"/>
-                            </svg>
                             <p class="text-sm text-slate-500">No catalog entries yet.</p>
                             <a href="{{ route('admin.product-details.create') }}"
                                class="mt-2 inline-block text-sm font-medium text-orange-500 hover:text-orange-600">
@@ -92,9 +84,7 @@
         </table>
     </div>
     @if($details->hasPages())
-        <div class="border-t border-slate-200 px-6 py-4">
-            {{ $details->links() }}
-        </div>
+        <div class="border-t border-slate-200 px-6 py-4">{{ $details->links() }}</div>
     @endif
 </div>
 
